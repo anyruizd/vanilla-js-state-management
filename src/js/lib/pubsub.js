@@ -5,8 +5,9 @@ export default class PubSub {
 
   /**
    * Subscribes the passed callback to the passed event. 
-   * @event { String } The event to subscribe to
-   * @callback { function } The function to call when a new event is published 
+   * @param { string } event The event to subscribe to
+   * @param { function } callback The function to call when a new event is published 
+   * @returns { number } A count of callbacks for this event
    */
   subscribe(event, callback) {
     let self = this;
@@ -22,9 +23,10 @@ export default class PubSub {
   }
 
   /**
-   * Publishes the event, passing the data to its callbacks
+   * Publishes the event, looping through each event and passing the data to its callbacks
    * @param { string } event The event to publish
-   * @param {*} data The data to pass to subscribers
+   * @param { object } [data={}] The data to pass to subscribers
+   * @returns {array} The callbacks for this event, or an empty array if no event exits
    */
   publish(event, data = {}) {
     let self = this
@@ -35,6 +37,7 @@ export default class PubSub {
       return []
     }
 
+    // Call each subscription callback with the passed data
     return self.events[event].map(callback => callback(data))
   }
 }
